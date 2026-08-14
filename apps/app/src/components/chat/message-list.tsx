@@ -160,7 +160,7 @@ class ToolMessage extends React.Component<ToolMessageProps, { failed: boolean }>
   render() {
     if (this.state.failed) {
       return (
-        <div className="text-xs text-muted-foreground">Tool step unavailable</div>
+        <div className="text-xs text-muted-foreground">工具步骤不可用</div>
       )
     }
     return <ToolMessageInner part={this.props.part} />
@@ -343,7 +343,7 @@ function FileMessage({ part, tone }: FileMessageProps) {
                 type="button"
                 variant="ghost"
                 size="icon-xs"
-                aria-label={`More actions for ${title}`}
+                aria-label={`更多操作 ${title}`}
               >
                 <MoreHorizontal />
               </Button>
@@ -353,13 +353,13 @@ function FileMessage({ part, tone }: FileMessageProps) {
             {downloadUrl ? (
               <DropdownMenuItem onClick={handleDownload}>
                 <Download />
-                Download
+                下载
               </DropdownMenuItem>
             ) : null}
             {canReveal ? (
               <DropdownMenuItem onClick={handleReveal}>
                 <FolderOpen />
-                Reveal in Finder
+                在 Finder 中显示
               </DropdownMenuItem>
             ) : null}
           </DropdownMenuContent>
@@ -387,7 +387,7 @@ function CopyMessageButton({ messages }: CopyMessageButtonProps) {
       setCopied(true)
       window.setTimeout(() => setCopied(false), 2000)
     } catch {
-      // ignore clipboard failures
+      // 忽略剪贴板失败
     }
   }, [text])
 
@@ -396,11 +396,11 @@ function CopyMessageButton({ messages }: CopyMessageButtonProps) {
   }
 
   return (
-    <MessageAction tooltip={copied ? "Copied!" : "Copy"}>
+    <MessageAction tooltip={copied ? "已复制！" : "复制"}>
       <Button
         variant="ghost"
         size="icon"
-        aria-label="Copy message"
+        aria-label="复制消息"
         onClick={() => void onCopy()}
       >
         {copied ? <Check /> : <Copy />}
@@ -666,32 +666,32 @@ const UserMessage = React.memo(
                     <MessageTimestamp message={message} className="mr-1.5" />
                     <CopyMessageButton messages={[message]} />
                     {messageText ? (
-                      <MessageAction tooltip="Edit message">
+                      <MessageAction tooltip="编辑消息">
                         <Button
                           variant="ghost"
                           size="icon"
-                          aria-label="Edit message"
+                          aria-label="编辑消息"
                           onClick={() => onEditUserMessage(message.id, messageText)}
                         >
                           <Pencil />
                         </Button>
                       </MessageAction>
                     ) : null}
-                    <MessageAction tooltip="Branch in new chat">
+                    <MessageAction tooltip="开启新聊天分支">
                       <Button
                         variant="ghost"
                         size="icon"
-                        aria-label="Branch in new chat"
+                        aria-label="开启新聊天分支"
                         onClick={() => onForkAtMessage(message.id)}
                       >
                         <Split className="rotate-90" />
                       </Button>
                     </MessageAction>
-                    <MessageAction tooltip="Revert">
+                    <MessageAction tooltip="还原">
                       <Button
                         variant="ghost"
                         size="icon"
-                        aria-label="Revert"
+                        aria-label="还原"
                         onClick={() => onRevertToUserMessage(message.id)}
                       >
                         <Undo2 />
@@ -706,22 +706,22 @@ const UserMessage = React.memo(
             {messageText ? (
               <ContextMenuItem onClick={() => onEditUserMessage(message.id, messageText)}>
                 <Pencil className="size-4" />
-                Edit message
+                编辑消息
               </ContextMenuItem>
             ) : null}
             {messageText ? (
               <ContextMenuItem onClick={() => void navigator.clipboard.writeText(messageText)}>
                 <Copy className="size-4" />
-                Copy
+                复制
               </ContextMenuItem>
             ) : null}
             <ContextMenuItem onClick={() => onForkAtMessage(message.id)}>
               <Split className="size-4 rotate-90" />
-              Branch in new chat
+              开启新聊天分支
             </ContextMenuItem>
             <ContextMenuItem onClick={() => onRevertToUserMessage(message.id)}>
               <Undo2 className="size-4" />
-              Revert
+              还原
             </ContextMenuItem>
           </ContextMenuContent>
         </ContextMenu>
@@ -743,7 +743,7 @@ type MessageComponentProps = {
 const MessageComponent = React.memo(
   ({ message, isLastMessage, isStreaming, isLastStep, hideReasoning }: MessageComponentProps) => {
     if (isSessionErrorMessage(message)) {
-      return <ErrorMessage error={getMessagesText([message]) || "Session failed"} />
+      return <ErrorMessage error={getMessagesText([message]) || "会话失败"} />
     }
 
     if (isEmptyMessage(message)) {
@@ -789,7 +789,7 @@ const LoadingMessage = React.memo(({ label }: { label?: string }) => (
             style={{ backgroundColor: "#818cf8", width: "100%", height: "100%", borderRadius: "50%" }}
           />
         </div>
-        <span>{label ?? "Thinking…"}</span>
+        <span>{label ?? "思考中…"}</span>
       </div>
     </div>
   </Message>
@@ -842,8 +842,8 @@ const RetryMessage = React.memo(({ status }: RetryMessageProps) => {
   }, [status])
 
   const info = seconds > 0
-    ? `Retrying in ${seconds}s · attempt ${status.attempt}`
-    : `Retrying · attempt ${status.attempt}`
+    ? `正在重试 ${seconds}秒 · 第${status.attempt}次尝试`
+    : `正在重试 · 第${status.attempt}次尝试`
   const action = status.action
 
   return (
@@ -904,7 +904,7 @@ function CompletedStepRun({ label, children }: { label: string; children: React.
       <div className="mx-auto flex w-full max-w-3xl px-2 md:px-10">
         <CollapsibleTrigger
           className="group flex cursor-pointer items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
-          aria-label={open ? `${label}. Hide steps` : `${label}. Show steps`}
+          aria-label={open ? `${label}. 隐藏步骤` : `${label}. 显示步骤`}
         >
           <span>{label}</span>
           <ChevronRight
@@ -1011,10 +1011,10 @@ function MessageGroup({
     ) + proseReasoning.length
   const stepRunLabel =
     stepsStartedAt !== null && stepsEndedAt !== null && stepsEndedAt > stepsStartedAt
-      ? `Worked for ${formatToolCallDuration(stepsEndedAt - stepsStartedAt)}`
+      ? `已工作 ${formatToolCallDuration(stepsEndedAt - stepsStartedAt)}`
       : stepRowCount === 1
-        ? "1 step"
-        : `${stepRowCount} steps`
+        ? "1 步"
+        : `${stepRowCount} 步`
   // A short finished run reads fine as a list, so only long ones fold away.
   const collapseSteps =
     !isLiveGroup && stepItems.length > 0 && stepRowCount > COLLAPSED_STEP_RUN_MIN_ROWS
@@ -1110,21 +1110,21 @@ function MessageGroup({
             <CopyMessageButton messages={renderableItems.map((item) => item.message)} />
             {lastRealItem ? (
               <>
-                <MessageAction tooltip="Branch in new chat">
+                <MessageAction tooltip="开启新聊天分支">
                   <Button
                     variant="ghost"
                     size="icon"
-                    aria-label="Branch in new chat"
+                    aria-label="开启新聊天分支"
                     onClick={() => onForkAtMessage(lastRealItem.message.id)}
                   >
                     <Split className="rotate-90" />
                   </Button>
                 </MessageAction>
-                <MessageAction tooltip="Revert">
+                <MessageAction tooltip="还原">
                   <Button
                     variant="ghost"
                     size="icon"
-                    aria-label="Revert"
+                    aria-label="还原"
                     onClick={() => onRevertToUserMessage(lastRealItem.message.id)}
                   >
                     <Undo2 />
