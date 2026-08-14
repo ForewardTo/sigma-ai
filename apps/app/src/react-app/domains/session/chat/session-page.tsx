@@ -836,8 +836,8 @@ export function SessionPage(props: SessionPageProps) {
   const showSelectedWorkspaceError = Boolean(selectedWorkspaceErrorMessage);
   const selectedWorkspaceErrorTitle =
     props.selectedWorkspaceDisplay.workspaceType === "remote"
-      ? "Remote workspace unavailable"
-      : "OpenCode unavailable";
+      ? "远程工作区不可用"
+      : "OpenCode 不可用";
 
   const reactSessionBaseUrl = props.opencodeBaseUrl?.trim() ?? "";
   const reactSessionToken =
@@ -1108,7 +1108,7 @@ export function SessionPage(props: SessionPageProps) {
                   : props.mainContentTitle
                   ? props.mainContentTitle
                   : showWorkspaceSetupEmptyState
-                  ? t("session.create_or_connect_workspace")
+              ? t("session.create_or_connect_workspace")
                   : selectedSessionTitle || t("session.default_title")}
               </h1>
               {props.developerMode ? (
@@ -1132,14 +1132,14 @@ export function SessionPage(props: SessionPageProps) {
                         variant="ghost"
                         size="icon-sm"
                         className="hidden rounded-xl text-gray-10 transition-colors hover:bg-muted hover:text-foreground lg:inline-flex"
-                        aria-label="Find in conversation"
+                      aria-label="在对话中查找"
                         onClick={() => useSessionFindStore.getState().openFind({ sessionId: findButtonSessionId })}
                       >
                         <TextSearch size={16} />
                       </Button>
                     }
                   />
-                  <TooltipContent>Find in conversation (⌘F)</TooltipContent>
+                  <TooltipContent>在对话中查找 (⌘F)</TooltipContent>
                 </Tooltip>
               ) : null}
               <Tooltip>
@@ -1152,7 +1152,7 @@ export function SessionPage(props: SessionPageProps) {
                         "hidden rounded-xl text-gray-10 transition-colors hover:bg-muted hover:text-foreground lg:inline-flex",
                         sidePanelOpen && "bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary",
                       )}
-                      aria-label={sidePanelOpen ? "Close side panel" : "Open side panel"}
+                      aria-label={sidePanelOpen ? "关闭侧边栏面板" : "打开侧边栏面板"}
                       aria-pressed={sidePanelOpen}
                       onClick={() => {
                         if (sidePanelOpen) {
@@ -1166,7 +1166,7 @@ export function SessionPage(props: SessionPageProps) {
                     </Button>
                   }
                 />
-                <TooltipContent>{sidePanelOpen ? "Close side panel" : "Open side panel"}</TooltipContent>
+                <TooltipContent>{sidePanelOpen ? "关闭侧边栏面板" : "打开侧边栏面板"}</TooltipContent>
               </Tooltip>
               {showCloudSignIn ? (
                 <Button
@@ -1188,7 +1188,7 @@ export function SessionPage(props: SessionPageProps) {
                       variant="ghost"
                       size="icon-sm"
                       className="rounded-xl text-gray-10 transition-colors hover:bg-muted hover:text-foreground lg:hidden"
-                      aria-label="More actions"
+                      aria-label="更多操作"
                     >
                       <MoreHorizontal size={18} />
                     </Button>
@@ -1200,23 +1200,23 @@ export function SessionPage(props: SessionPageProps) {
                       onClick={() => useSessionFindStore.getState().openFind({ sessionId: findButtonSessionId })}
                     >
                       <TextSearch className="size-4" />
-                      Find in conversation
+                      在对话中查找
                     </DropdownMenuItem>
                   ) : null}
                   <DropdownMenuItem onClick={openArtifactRailPane}>
                     <FileText className="size-4" />
-                    Artifacts{artifactTargetCount > 0 ? ` (${artifactTargetCount})` : ""}
+                      输出文件{artifactTargetCount > 0 ? ` (${artifactTargetCount})` : ""}
                   </DropdownMenuItem>
                   {voiceExtensionEnabled ? (
                     <DropdownMenuItem onClick={openVoiceRailPane}>
                       <Mic2 className="size-4" />
-                      Voice Mode
+                      语音模式
                     </DropdownMenuItem>
                   ) : null}
                   {showCloudSignIn ? (
                     <DropdownMenuItem onClick={openCloudSignIn}>
                       <Cloud className="size-4" />
-                      {t("den.signin_button")}
+                      登录
                     </DropdownMenuItem>
                   ) : null}
                 </DropdownMenuContent>
@@ -1232,9 +1232,9 @@ export function SessionPage(props: SessionPageProps) {
                       window.localStorage.removeItem("openwork.orgOnboardingSeen");
                     } catch {}
                   }}
-                  title="Clears acknowledged providers + org onboarding so they trigger again"
+                  title="清除已确认的提供商和组织首次使用引导，以便重新触发"
                 >
-                  Reset notifications
+                  重置通知
                 </Button>
               ) : null}
             </div>
@@ -1379,7 +1379,7 @@ export function SessionPage(props: SessionPageProps) {
                   {props.notFoundMessage ? (
                     <div className="px-6 py-16 text-center">
                       <div className="mx-auto max-w-md rounded-2xl border border-dls-border bg-dls-card px-5 py-6 shadow-[var(--dls-card-shadow)]">
-                        <h3 className="text-base font-medium text-dls-text">Workspace or session not found</h3>
+                        <h3 className="text-base font-medium text-dls-text">未找到工作区或会话</h3>
                         <p className="mt-2 text-sm leading-6 text-dls-secondary">{props.notFoundMessage}</p>
                       </div>
                     </div>
@@ -1406,14 +1406,14 @@ export function SessionPage(props: SessionPageProps) {
                             size="sm"
                             onClick={() => props.sidebar.onCreateTaskInWorkspace(props.selectedWorkspaceId)}
                           >
-                            Retry
+                            重试
                           </Button>
                           <Button
                             variant="outline"
                             size="sm"
                             onClick={() => void Promise.resolve(props.sidebar.onTestWorkspaceConnection(props.selectedWorkspaceId))}
                           >
-                            {t("workspace_list.test_connection")}
+                                 {t("workspace_list.test_connection")}
                           </Button>
                           <Button
                             variant="outline"
@@ -1520,8 +1520,8 @@ export function SessionPage(props: SessionPageProps) {
                   className="h-[min(88dvh,100dvh)] max-h-[88dvh] p-0 pb-[env(safe-area-inset-bottom)]"
                 >
                   <SheetHeader className="sr-only">
-                    <SheetTitle>Session panel</SheetTitle>
-                    <SheetDescription>Artifacts, files, and session tools</SheetDescription>
+                    <SheetTitle>会话面板</SheetTitle>
+                <SheetDescription>输出、文件和会话工具</SheetDescription>
                   </SheetHeader>
                   <div className="flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-dls-surface">
                     {activeSidePanel === "extensions" && props.settingsSlot ? (
@@ -1562,8 +1562,8 @@ export function SessionPage(props: SessionPageProps) {
                   panelRailActive && hasBrowserTabs && "bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary",
                 )}
                 onClick={openBrowserRailPane}
-                title={hasBrowserTabs ? "Browser" : "Browser opens when a page is available"}
-                aria-label={hasBrowserTabs ? "Browser" : "Browser opens when a page is available"}
+                title={hasBrowserTabs ? "浏览器" : "页面打开时可用"}
+                aria-label={hasBrowserTabs ? "浏览器" : "页面打开时可用"}
                 aria-pressed={panelRailActive && hasBrowserTabs}
                 disabled={!hasBrowserTabs}
               >
@@ -1579,8 +1579,8 @@ export function SessionPage(props: SessionPageProps) {
                   voiceRailActive && "bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary",
                 )}
                 onClick={openVoiceRailPane}
-                title="Voice Mode"
-                aria-label="Voice Mode"
+                title="语音模式"
+                aria-label="语音模式"
                 aria-pressed={voiceRailActive}
               >
                 <Mic2 size={15} />
@@ -1594,8 +1594,8 @@ export function SessionPage(props: SessionPageProps) {
                 panelRailActive && "bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary",
               )}
               onClick={openArtifactRailPane}
-              title={`Artifacts (${artifactTargetCount})`}
-              aria-label={`Artifacts (${artifactTargetCount})`}
+              title={`输出文件 (${artifactTargetCount})`}
+              aria-label={`输出文件 (${artifactTargetCount})`}
               aria-pressed={panelRailActive}
             >
               <FileText size={15} />
@@ -1649,11 +1649,11 @@ export function SessionPage(props: SessionPageProps) {
       <Dialog open={createGroupOpen} onOpenChange={(open) => { if (!open) setCreateGroupOpen(false); }}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>{t("session_management.new_group")}</DialogTitle>
+             <DialogTitle>{t("session_management.new_group")}</DialogTitle>
           </DialogHeader>
           <Input
             type="text"
-            value={createGroupLabel}
+            value={createGroupLabel}  
             onChange={(e) => setCreateGroupLabel(e.currentTarget.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter" && createGroupLabel.trim()) {
@@ -1673,7 +1673,7 @@ export function SessionPage(props: SessionPageProps) {
                 setCreateGroupOpen(false);
               }}
             >
-              {t("common.save")}
+             {t("common.save")}
             </Button>
           </DialogFooter>
         </DialogContent>
