@@ -13,6 +13,34 @@
 
 @import "@fontsource-variable/ibm-plex-sans";
 
+/* 思源黑体 (Noto Sans SC) — 本地加载，离线可用
+   使用 unicode-range 限定只渲染中文字符，
+   英文/数字继续用系统字体 (SF Pro / Segoe UI) */
+@font-face {
+  font-family: "Noto Sans SC";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/noto-sans-sc-regular.woff2") format("woff2");
+  unicode-range: U+4E00-9FFF, U+3400-4DBF, U+20000-2A6DF, U+3000-303F, U+FF00-FFEF, U+2018-201F, U+2026;
+}
+@font-face {
+  font-family: "Noto Sans SC";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/noto-sans-sc-medium.woff2") format("woff2");
+  unicode-range: U+4E00-9FFF, U+3400-4DBF, U+20000-2A6DF, U+3000-303F, U+FF00-FFEF, U+2018-201F, U+2026;
+}
+@font-face {
+  font-family: "Noto Sans SC";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/noto-sans-sc-bold.woff2") format("woff2");
+  unicode-range: U+4E00-9FFF, U+3400-4DBF, U+20000-2A6DF, U+3000-303F, U+FF00-FFEF, U+2018-201F, U+2026;
+}
+
 @source "../../index.html";
 @source "../";
 @source inline("{bg,text,border}-{bronze,gold,brown,orange,tomato,red,ruby,crimson,pink,plum,purple,violet,iris,indigo,blue,cyan,teal,jade,green,grass,sky,mint,lime,yellow,amber,gray,mauve,slate,sage,olive,sand}-{1..12}");
@@ -188,6 +216,7 @@ html {
 body {
   margin: 0;
   font-family:
+    "Noto Sans SC",       /* 思源黑体 (仅中文，unicode-range 限定) */
     -apple-system,
     BlinkMacSystemFont,
     system-ui,
@@ -196,9 +225,7 @@ body {
     Roboto,
     "Helvetica Neue",
     Arial,
-    "Noto Sans",
-    "Apple Color Emoji",
-    "Segoe UI Emoji";
+    sans-serif;
   font-size: 13px;
   line-height: 1.5;
   color: var(--dls-text-primary);
@@ -589,8 +616,8 @@ select:disabled {
 }
 
 @theme inline {
-  --font-sans: -apple-system, BlinkMacSystemFont, system-ui, ui-sans-serif, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-heading: -apple-system, BlinkMacSystemFont, system-ui, ui-sans-serif, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "Noto Sans SC", -apple-system, BlinkMacSystemFont, system-ui, ui-sans-serif, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-heading: "Noto Sans SC", -apple-system, BlinkMacSystemFont, system-ui, ui-sans-serif, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --text-sm: 0.8125rem;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
