@@ -12,7 +12,7 @@ export type PanelEmptyActions = {
 };
 
 export function handlePanelEscape(key: string, onClose: () => void) {
-  if (key !== "Escape") return false;
+  if (key !== "Esc") return false;
   onClose();
   return true;
 }
@@ -34,8 +34,8 @@ export function getPanelDestinations(
   if (actions.onOpenBrowser) {
     destinations.push({
       id: "browser",
-      label: "Browser",
-      description: "Open a new page in the built-in browser.",
+      label: "浏览器",
+      description: "在内置浏览器中打开新页面。",
       icon: <Globe aria-hidden="true" />,
       activate: actions.onOpenBrowser,
     });
@@ -43,8 +43,8 @@ export function getPanelDestinations(
 
   destinations.push({
     id: "files",
-    label: "Files & artifacts",
-    description: "View files and artifacts created in this session.",
+    label: "文件和制品",
+    description: "查看本会话中创建的文件和制品。",
     icon: <FileText aria-hidden="true" />,
     activate: onOpenFiles,
   });
@@ -52,8 +52,8 @@ export function getPanelDestinations(
   if (actions.onOpenExtensions) {
     destinations.push({
       id: "extensions",
-      label: "Library",
-      description: "Browse the skills and connections available to your agent.",
+      label: "库",
+      description: "浏览 Agent 可用的技能和连接。",
       icon: <Puzzle aria-hidden="true" />,
       activate: actions.onOpenExtensions,
     });
@@ -62,8 +62,8 @@ export function getPanelDestinations(
   if (actions.onOpenVoice) {
     destinations.push({
       id: "voice",
-      label: "Voice Mode",
-      description: "Talk to OpenWork with real-time voice.",
+      label: "语音模式",
+      description: "使用实时语音与 OpenWork 对话。",
       icon: <Mic2 aria-hidden="true" />,
       activate: actions.onOpenVoice,
     });
@@ -85,15 +85,15 @@ export function PanelEmpty({ onOpenBrowser, onOpenExtensions, onOpenVoice }: Pan
           onClick={() => setDestination("chooser")}
         >
           <ArrowLeft />
-          All destinations
+          所有目标
         </Button>
         <div className="m-auto max-w-sm text-center">
           <span className="mx-auto mb-4 flex size-11 items-center justify-center rounded-xl bg-muted text-muted-foreground">
             <FileText aria-hidden="true" />
           </span>
-          <h2 className="text-base font-medium text-foreground">No files or artifacts yet</h2>
+          <h2 className="text-base font-medium text-foreground">尚未有文件或制品</h2>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            Files and artifacts created in this session will appear here automatically.
+            本会话中创建的文件和制品将自动显示在这里。
           </p>
         </div>
       </div>
@@ -108,9 +108,9 @@ export function PanelEmpty({ onOpenBrowser, onOpenExtensions, onOpenVoice }: Pan
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-y-auto p-4 sm:p-6">
       <div className="my-auto w-full max-w-xl self-center">
-        <h2 className="text-base font-medium text-foreground">Choose a destination</h2>
+        <h2 className="text-base font-medium text-foreground">选择一个目标</h2>
         <p className="mt-1 text-sm leading-6 text-muted-foreground">
-          Open a tool or return here whenever you want to switch.
+          随时打开工具或返回此处切换。
         </p>
         <div className="mt-5 grid gap-2" aria-label="Panel destinations">
           {destinations.map((item) => (
@@ -124,7 +124,7 @@ export function PanelEmpty({ onOpenBrowser, onOpenExtensions, onOpenVoice }: Pan
               onClick={() => item.activate()}
             >
               <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground [&_svg]:size-4">
-                {item.icon}
+              {item.icon}              
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block text-sm font-medium text-foreground">{item.label}</span>
