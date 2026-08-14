@@ -5,7 +5,10 @@ import { ArrowRight, X, Zap } from "lucide-react";
 import { DEFAULT_MODEL } from "@/app/constants";
 import type { ComposerAttachment } from "@/app/types";
 import { resolveOrganizationPromptCardContent } from "@/components/chat/task-suggestions";
-import { useCheckDesktopRestriction, useOrgRestrictions } from "@/react-app/domains/cloud/desktop-config-provider";
+import {
+  useCheckDesktopRestriction,
+  useOrgRestrictions,
+} from "@/react-app/domains/cloud/desktop-config-provider";
 import { useDenAuth } from "@/react-app/domains/cloud/den-auth-provider";
 import {
   getOpenWorkModelsActionUrl,
@@ -15,7 +18,10 @@ import {
   useOpenWorkModelsPromoEligibility,
 } from "@/react-app/domains/cloud/openwork-models-promo";
 import { usePlatform } from "@/react-app/kernel/platform";
-import { NewTaskComposer, type NewTaskComposerContext } from "./new-task-composer";
+import {
+  NewTaskComposer,
+  type NewTaskComposerContext,
+} from "./new-task-composer";
 
 type HeroSuggestion = {
   title: string;
@@ -25,24 +31,28 @@ type HeroSuggestion = {
 
 const DEFAULT_SUGGESTIONS: HeroSuggestion[] = [
   {
-    title: "Summarize my week",
-    description: "Pull highlights from email and calendar.",
-    prompt: "Summarize my week: pull the highlights from my connected email and calendar and give me a short digest of what happened and what needs my attention.",
+    title: "总结本周",
+    description: "从邮件和日历中提取重点。",
+    prompt:
+      "总结我的本周：从我已连接的邮件和日历中提取重点，给我一个简短摘要以及需要注意的事项。",
   },
   {
-    title: "Clean up a spreadsheet",
-    description: "Drop in a CSV and describe the result you want.",
-    prompt: "Create a sample CSV file with 20 rows of fake customer data (name, email, company, revenue). Then show me a summary of the data.",
+    title: "整理电子表格",
+    description: "导入 CSV 文件并描述想要的结果。",
+    prompt:
+      "创建一个包含 20 行假客户数据（姓名、邮箱、公司、收入）的示例 CSV 文件。然后展示数据摘要。",
   },
   {
-    title: "Draft a document",
-    description: "Reports, emails, or briefs from a few bullet points.",
-    prompt: "Draft a one-page project brief. Ask me for the bullet points you need, then turn them into a clear, well-structured document.",
+    title: "起草文档",
+    description: "根据几个要点生成报告、邮件或简报。",
+    prompt:
+      "起草一份一页的项目简报。先问我需要的要点，然后将它们转化为清晰、结构良好的文档。",
   },
   {
-    title: "Automate a web task",
-    description: "Use the built-in browser for repetitive steps.",
-    prompt: "Open craigslist.org in the browser and search for couches for sale. Show me the top 5 results with prices.",
+    title: "自动化网页任务",
+    description: "使用内置浏览器执行重复步骤。",
+    prompt:
+      "在浏览器中打开 craigslist.org 并搜索出售的沙发。展示前 5 个带价格的结果。",
   },
 ];
 
@@ -67,22 +77,35 @@ export function SessionEmptyHero(props: SessionEmptyHeroProps) {
   const [prompt, setPrompt] = useState("");
   const orgRestrictions = useOrgRestrictions();
   const checkDesktopRestriction = useCheckDesktopRestriction();
-  const canAddProviders = !checkDesktopRestriction({ restriction: "allowCustomProviders" });
+  const canAddProviders = !checkDesktopRestriction({
+    restriction: "allowCustomProviders",
+  });
   const platform = usePlatform();
   const denAuth = useDenAuth();
   const openWorkModelsPromoEligible = useOpenWorkModelsPromoEligibility();
-  const [modelsPromoHidden, setModelsPromoHidden] = useState(isOpenWorkModelsPromoHidden);
+  const [modelsPromoHidden, setModelsPromoHidden] = useState(
+    isOpenWorkModelsPromoHidden,
+  );
 
   useEffect(() => {
-    const handlePromoChanged = () => setModelsPromoHidden(isOpenWorkModelsPromoHidden());
-    window.addEventListener(openWorkModelsPromoChangedEvent, handlePromoChanged);
-    return () => window.removeEventListener(openWorkModelsPromoChangedEvent, handlePromoChanged);
+    const handlePromoChanged = () =>
+      setModelsPromoHidden(isOpenWorkModelsPromoHidden());
+    window.addEventListener(
+      openWorkModelsPromoChangedEvent,
+      handlePromoChanged,
+    );
+    return () =>
+      window.removeEventListener(
+        openWorkModelsPromoChangedEvent,
+        handlePromoChanged,
+      );
   }, []);
 
   // Quiet inline lead to OpenWork Models: replaces the old startup dialog
   // interrupt. Shown only while the session runs on the free starter model
   // (the built-in `opencode` provider) and the hosted offering applies.
-  const onFreeStarterModel = props.composer?.selectedModel.providerID === DEFAULT_MODEL.providerID;
+  const onFreeStarterModel =
+    props.composer?.selectedModel.providerID === DEFAULT_MODEL.providerID;
   const showModelsHint =
     openWorkModelsPromoEligible &&
     !modelsPromoHidden &&
@@ -90,18 +113,26 @@ export function SessionEmptyHero(props: SessionEmptyHeroProps) {
     onFreeStarterModel;
 
   const organizationPrompts = orgRestrictions.onboardingPrompts;
-  const suggestions: HeroSuggestion[] = organizationPrompts !== undefined
-    ? organizationPrompts.map((orgPrompt, index) => {
-      const card = resolveOrganizationPromptCardContent({
-        prompt: orgPrompt,
-        description: orgRestrictions.onboardingPromptDescriptions?.[index],
-        index,
-      });
-      return { title: card.title, description: card.description, prompt: card.selectionPrompt };
-    })
-    : DEFAULT_SUGGESTIONS;
+  const suggestions: HeroSuggestion[] =
+    organizationPrompts !== undefined
+      ? organizationPrompts.map((orgPrompt, index) => {
+          const card = resolveOrganizationPromptCardContent({
+            prompt: orgPrompt,
+            description: orgRestrictions.onboardingPromptDescriptions?.[index],
+            index,
+          });
+          return {
+            title: card.title,
+            description: card.description,
+            prompt: card.selectionPrompt,
+          };
+        })
+      : DEFAULT_SUGGESTIONS;
 
-  const submit = (resolvedPrompt: string, attachments: ComposerAttachment[]) => {
+  const submit = (
+    resolvedPrompt: string,
+    attachments: ComposerAttachment[],
+  ) => {
     const trimmedPrompt = resolvedPrompt.trim();
     if (!trimmedPrompt || props.busy) return;
     props.onRunTask(trimmedPrompt, attachments);
@@ -116,9 +147,9 @@ export function SessionEmptyHero(props: SessionEmptyHeroProps) {
     <div className="mx-auto w-full max-w-[640px] space-y-6 px-4 max-lg:px-4 sm:px-6">
       <div className="space-y-1.5 text-center">
         <h2 className="text-[24px] font-semibold leading-[30px] tracking-[-0.02em] text-foreground">
-          What do you need done?
+          你需要做什么？
         </h2>
-        <p className="text-[13px] text-muted-foreground">Describe it in plain language</p>
+        <p className="text-[13px] text-muted-foreground">告诉我你想做的事</p>
       </div>
 
       <NewTaskComposer
@@ -134,27 +165,34 @@ export function SessionEmptyHero(props: SessionEmptyHeroProps) {
           className="flex items-center justify-center gap-2 text-[12px] text-muted-foreground"
           data-testid="openwork-models-hint"
         >
-          <span>Using the free starter model.</span>
+          <span>正在使用免费入门模型。</span>
           <button
             type="button"
             className="flex items-center gap-1 font-medium text-blue-10 transition-colors hover:text-blue-11"
-            onClick={() => platform.openLink(getOpenWorkModelsActionUrl(denAuth.isSignedIn, "sign-up"))}
+            onClick={() =>
+              platform.openLink(
+                getOpenWorkModelsActionUrl(denAuth.isSignedIn, "sign-up"),
+              )
+            }
           >
-            Get frontier models with no API keys
+            使用无 API 密钥的前沿模型
             <ArrowRight className="size-3" />
           </button>
           <button
             type="button"
             className="flex size-5 items-center justify-center rounded text-muted-foreground/70 transition-colors hover:text-foreground"
             onClick={hideOpenWorkModelsPromo}
-            aria-label="Hide OpenWork Models hint"
+            aria-label="隐藏 OpenWork Models 提示"
           >
             <X className="size-3" />
           </button>
         </div>
       ) : null}
 
-      {!showModelsHint && canAddProviders && props.providerCount === 0 && props.onOpenProviderAuth ? (
+      {!showModelsHint &&
+      canAddProviders &&
+      props.providerCount === 0 &&
+      props.onOpenProviderAuth ? (
         <button
           type="button"
           className="flex w-full items-start gap-3 rounded-xl border border-blue-7/50 bg-blue-2/40 p-3.5 text-left transition-colors hover:bg-blue-3/50"
@@ -162,9 +200,11 @@ export function SessionEmptyHero(props: SessionEmptyHeroProps) {
         >
           <Zap className="mt-0.5 size-4 shrink-0 text-blue-10" />
           <div>
-            <div className="text-[13px] font-medium text-foreground">Connect a model provider</div>
+            <div className="text-[13px] font-medium text-foreground">
+              连接模型提供商
+            </div>
             <div className="mt-0.5 text-[12px] text-muted-foreground">
-              Add an API key for Anthropic, OpenAI, Google, or other providers so tasks can run.
+              添加 Anthropic、OpenAI、Google 或其他提供商的 API 密钥以运行任务
             </div>
           </div>
         </button>
@@ -178,7 +218,9 @@ export function SessionEmptyHero(props: SessionEmptyHeroProps) {
             className="rounded-xl border border-border bg-background p-3.5 text-left transition-colors hover:bg-accent"
             onClick={() => fillPrompt(suggestion.prompt)}
           >
-            <div className="truncate text-[13px] font-medium text-foreground">{suggestion.title}</div>
+            <div className="truncate text-[13px] font-medium text-foreground">
+              {suggestion.title}
+            </div>
             <div className="mt-0.5 line-clamp-2 text-[12px] leading-[17px] text-muted-foreground">
               {suggestion.description}
             </div>
