@@ -13,12 +13,12 @@ import { useOrgRestrictions } from "@/react-app/domains/cloud/desktop-config-pro
 import { BoltIcon, CubeIcon, DocumentChartBarIcon, GlobeAltIcon, SparklesIcon } from "@heroicons/react/24/solid"
 
 const CSV_PROMPT =
-  "Create a sample CSV file with 20 rows of fake customer data (name, email, company, revenue). Then show me a summary of the data."
+  "创建一个包含 20 行假客户数据 (姓名、邮箱、公司、收入) 的示例 CSV 文件。然后给我展示数据摘要。"
 
 const BROWSER_PROMPT =
-  "Open craigslist.org in the browser and search for couches for sale. Show me the top 5 results with prices."
+  "在浏览器中打开 craigslist.org 并搜索待售的沙发。展示价格最高的前 5 个结果。"
 
-const ORGANIZATION_PROMPT_TITLES = ["Organization prompt 1", "Organization prompt 2", "Organization prompt 3"]
+const ORGANIZATION_PROMPT_TITLES = ["组织提示词 1", "组织提示词 2", "组织提示词 3"]
 
 export function resolveOrganizationPromptCardContent(input: {
   prompt: string
@@ -27,7 +27,7 @@ export function resolveOrganizationPromptCardContent(input: {
 }) {
   const title = input.description?.trim()
   return {
-    title: title || ORGANIZATION_PROMPT_TITLES[input.index] || "Organization prompt",
+    title: title || ORGANIZATION_PROMPT_TITLES[input.index] || "组织提示词",
     description: input.prompt,
     selectionPrompt: input.prompt,
   }
@@ -54,10 +54,10 @@ export function TaskSuggestions({ className }: TaskSuggestionsProps) {
     <div className={cn("@container flex flex-col gap-4 pt-1", className)}>
       <p className="text-muted-foreground font-medium select-none">
         {noProviders
-          ? "Connect a model provider to get started:"
+          ? "连接模型提供商以开始:"
           : hasOrganizationPrompts
-            ? "Try one of your organization's prompts:"
-            : "Try one of these:"}
+            ? "尝试组织的提示词:"
+            : "试试这些:"}
       </p>
       <div className="grid min-w-0 gap-2 @lg:grid-cols-2 @2xl:grid-cols-3">
         {noProviders ? (
@@ -76,9 +76,9 @@ export function TaskSuggestions({ className }: TaskSuggestionsProps) {
               <BoltIcon className="size-6 text-blue-10" aria-hidden />
             </DescriptiveButtonIcon>
             <DescriptiveButtonContent>
-              <DescriptiveButtonTitle>Connect a model provider</DescriptiveButtonTitle>
+              <DescriptiveButtonTitle>连接模型提供商</DescriptiveButtonTitle>
               <DescriptiveButtonDescription>
-                Add an API key for Anthropic, OpenAI, Google, or others
+                添加 Anthropic、OpenAI、Google 等的 API 密钥
               </DescriptiveButtonDescription>
             </DescriptiveButtonContent>
           </DescriptiveButton>
@@ -110,8 +110,8 @@ export function TaskSuggestions({ className }: TaskSuggestionsProps) {
                 <DocumentChartBarIcon className="size-6 text-green-10" aria-hidden />
               </DescriptiveButtonIcon>
               <DescriptiveButtonContent>
-                <DescriptiveButtonTitle>Edit a CSV</DescriptiveButtonTitle>
-                <DescriptiveButtonDescription>Create a sample spreadsheet</DescriptiveButtonDescription>
+                <DescriptiveButtonTitle>编辑 CSV</DescriptiveButtonTitle>
+                <DescriptiveButtonDescription>创建示例电子表格</DescriptiveButtonDescription>
               </DescriptiveButtonContent>
             </DescriptiveButton>
 
@@ -120,8 +120,8 @@ export function TaskSuggestions({ className }: TaskSuggestionsProps) {
                 <GlobeAltIcon className="size-6 text-blue-10" aria-hidden />
               </DescriptiveButtonIcon>
               <DescriptiveButtonContent>
-                <DescriptiveButtonTitle>Browse the web</DescriptiveButtonTitle>
-                <DescriptiveButtonDescription>Search Craigslist for couches</DescriptiveButtonDescription>
+                <DescriptiveButtonTitle>浏览网页</DescriptiveButtonTitle>
+                <DescriptiveButtonDescription>在 Craigslist 上搜索沙发</DescriptiveButtonDescription>
               </DescriptiveButtonContent>
             </DescriptiveButton>
 
@@ -139,8 +139,8 @@ export function TaskSuggestions({ className }: TaskSuggestionsProps) {
                 <CubeIcon className="size-6 text-amber-10" aria-hidden />
               </DescriptiveButtonIcon>
               <DescriptiveButtonContent>
-                <DescriptiveButtonTitle>Connect an extension</DescriptiveButtonTitle>
-                <DescriptiveButtonDescription>Add MCPs and integrations</DescriptiveButtonDescription>
+                <DescriptiveButtonTitle>连接扩展</DescriptiveButtonTitle>
+                <DescriptiveButtonDescription>添加 MCP 和集成</DescriptiveButtonDescription>
               </DescriptiveButtonContent>
             </DescriptiveButton>
           </>
