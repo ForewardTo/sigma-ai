@@ -362,13 +362,13 @@ export function ModelSelect({
         >
           <span className="max-w-48 truncate">
             {hideValue || (!denAuth.isSignedIn && isCloudManagedProviderKey(value.providerID))
-              ? "Select model"
-              : (selectedOption?.title ?? value.modelID ?? "Select model")}
+              ? "选择模型"
+              : (selectedOption?.title ?? value.modelID ?? "选择模型")}
           </span>
           <ChevronDown className="h-3 w-3" />
         </TooltipTrigger>
         <TooltipContent>
-          Change model
+          更换模型
         </TooltipContent>
       </Tooltip>
       <PopoverContent
@@ -380,10 +380,10 @@ export function ModelSelect({
           <CommandHeader>
             <CommandInput
               ref={searchInputRef}
-              placeholder="Search models..."
+              placeholder="搜索模型..."
             />
           </CommandHeader>
-          <CommandEmpty>No models found.</CommandEmpty>
+          <CommandEmpty>未找到模型。</CommandEmpty>
           {openWorkModelsSyncing ? (
             <div className="mx-1 mb-1 flex items-center gap-2 rounded-md border border-amber-6/60 bg-amber-2/40 px-2 py-1.5">
               <ProviderIcon
@@ -397,7 +397,7 @@ export function ModelSelect({
                   {OPENWORK_MODELS_PROVIDER_NAME}
                 </span>
                 <span className="block truncate text-[11px] text-muted-foreground">
-                  Included — pending workspace reload…
+                  已包含 - 等待工作区重新加载...
                 </span>
               </span>
             </div>
@@ -412,7 +412,7 @@ export function ModelSelect({
                   {group.promo ? (
                     <>
                       <span>{group.value}</span>
-                      <span className="shrink-0 font-normal text-muted-foreground">hosted · no API keys</span>
+                      <span className="shrink-0 font-normal text-muted-foreground">托管 · 无需 API 密钥</span>
                     </>
                   ) : (
                     group.value
@@ -478,10 +478,10 @@ export function ModelSelect({
                     onClick={handleOpenWorkModels}
                   >
                     <span className="min-w-0 flex-1 text-xs leading-4 text-foreground">
-                      One subscription unlocks these in every workspace.
+                      一次订阅即可在任意工作区使用这些模型。
                     </span>
                     <span className="shrink-0 text-xs font-semibold text-blue-11">
-                      {denAuth.isSignedIn ? "Enable →" : "Sign in →"}
+                      {denAuth.isSignedIn ? "启用 →" : "登录 →"}
                     </span>
                   </button>
                 ) : null}
@@ -493,7 +493,7 @@ export function ModelSelect({
           {canAddProviders ? (
             <div className="border-t border-border p-1">
               <div className="flex items-baseline px-2 pb-0.5 pt-1 text-xs text-muted-foreground">
-                Your API keys
+                您的 API 密钥
               </div>
               <button
                 type="button"
@@ -516,7 +516,7 @@ export function ModelSelect({
                   {!hasKeyProviders || keyProviders.length > keyProviderPreview.length ? "…" : ""}
                 </span>
                 <span className="shrink-0 text-xs font-medium text-muted-foreground">
-                  {hasKeyProviders ? "Connect more providers" : "Add your keys"}
+                  {hasKeyProviders ? "连接更多提供商" : "添加您的密钥"}
                 </span>
               </button>
             </div>
@@ -534,7 +534,7 @@ export function ModelSelect({
                 }}
               >
                 <Settings2 className="size-3.5" />
-                All models
+                所有模型
               </button>
               {showOpenWorkModelsPromo ? (
                 <button
@@ -542,7 +542,7 @@ export function ModelSelect({
                   className="shrink-0 rounded-md px-2 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
                   onClick={handleHideOpenWorkModels}
                 >
-                  Hide
+                  隐藏
                 </button>
               ) : null}
             </div>
