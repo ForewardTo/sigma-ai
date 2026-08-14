@@ -19,9 +19,9 @@ export function formatAutomationTime(value: number | null | undefined) {
 
 export function formatAutomationSchedule(schedule: AutomationSchedule) {
   if (schedule.kind === "once") {
-    return `Once · ${formatAutomationTime(schedule.at)} · ${schedule.timezone}`;
+    return `一次性 · ${formatAutomationTime(schedule.at)} · ${schedule.timezone}`;
   }
   const time = `${String(schedule.hour).padStart(2, "0")}:${String(schedule.minute).padStart(2, "0")}`;
-  if (schedule.kind === "daily") return `Daily · ${time} · ${schedule.timezone}`;
-  return `Weekly · ${formatAutomationWeekdays(schedule.daysOfWeek)} · ${time} · ${schedule.timezone}`;
+  if (schedule.kind === "daily") return `每天 · ${time} · ${schedule.timezone}`;
+  return `每周 · ${formatAutomationWeekdays(schedule.daysOfWeek)} · ${time} · ${schedule.timezone}`;
 }

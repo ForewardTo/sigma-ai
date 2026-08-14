@@ -57,7 +57,7 @@ import { automationModelOptions, describeAutomationModel } from "./automation-mo
 const ACTIVE_RUN_STATUSES = new Set<AutomationRun["status"]>(["queued", "claimed", "running"])
 
 function stateLabel(state: AutomationState) {
-  if (state === "needs_attention") return "Needs attention"
+  if (state === "needs_attention") return "需要关注"
   return state.slice(0, 1).toUpperCase() + state.slice(1)
 }
 
@@ -76,11 +76,17 @@ function runVariant(status: AutomationRun["status"]): "default" | "secondary" | 
 
 function runLabel(run: AutomationRun) {
   if (run.status === "skipped" && run.error?.code === "runner_unavailable") {
-    return "Missed — desktop runner unavailable"
+    return "错过 - 桌面运行器不可用"
   }
   if (run.status === "skipped" && (run.error?.code === "model_access_lost" || run.error?.code === "provider_unavailable")) {
-    return "Skipped — model unavailable"
+    return "已跳过 - 模型不可用"
   }
+  // 根据 status 转中文
+  if (run.status === "queued") return "排队中"
+  if (run.status === "claimed") return "已认领"
+  if (run.status === "running") return "运行中"
+  if (run.status === "succeeded") return "成功"
+  if (run.status === "failed") return "失败"
   return run.status
 }
 
@@ -92,11 +98,11 @@ function ExecutionIcon({ run }: { run: AutomationRun }) {
 
 function describeError(error: unknown) {
   if (error instanceof DenApiError) {
-    if (error.status === 401 || error.status === 403) return "Sign in to the selected Den organization to access Automations."
-    if (error.status === 404) return "This Automation is no longer available."
+    if (error.status === 401 || error.status === 403) return "出错了"
+    if (error.status === 404) return "自动化工具不存在"
     return error.message
   }
-  return error instanceof Error ? error.message : "Automations could not be loaded."
+  return error instanceof Error ? error.message : "无法加载自动化工具"
 }
 
 function inputFromDetail(detail: AutomationDetail): CreateAutomation {
@@ -115,19 +121,19 @@ function eventSummary(event: AutomationRunEvent) {
     .at(0)
   if (preferred) return preferred
   const serialized = JSON.stringify(payload)
-  return serialized === "{}" ? "No additional details." : serialized
+  return serialized === "{}" ? "无额外详情。" : serialized
 }
 
 function usageLabel(run: AutomationRun) {
   const input = run.usage.inputTokens === null ? "—" : run.usage.inputTokens.toLocaleString()
   const output = run.usage.outputTokens === null ? "—" : run.usage.outputTokens.toLocaleString()
   const cost = run.usage.costMicros === null ? "—" : `$${(run.usage.costMicros / 1_000_000).toFixed(4)}`
-  return `${input} input · ${output} output · ${cost}`
+  return `${input} 输入 · ${output} 输出 · ${cost}`
 }
 
 function LoadingState() {
   return (
-    <div className="space-y-4 p-6" role="status" aria-label="Loading Automations">
+    <div className="space-y-4 p-6" role="status" aria-label="正在加载自动化工具">
       <Skeleton className="h-14 rounded-2xl" />
       <Skeleton className="h-40 rounded-2xl" />
       <Skeleton className="h-40 rounded-2xl" />
@@ -242,9 +248,9 @@ export function AutomationsPage(props: { providerCatalog?: AutomationProviderCat
       <div className="mx-auto max-w-xl p-6 pt-16">
         <Alert variant="warning">
           <Cloud aria-hidden="true" />
-          <AlertTitle>Sign in to Den to use Automations</AlertTitle>
+          <AlertTitle>出错了</AlertTitle>
           <AlertDescription>
-            Den keeps Automation schedules and history. Cloud Automations can run while Desktop is offline; Desktop Automations run when this signed-in app is connected.
+            Den 保留自动化的调度和历史记录。云自动化可以在桌面离线时运行；桌面自动化在此登录的应用连接时运行。
           </AlertDescription>
         </Alert>
       </div>
@@ -255,8 +261,8 @@ export function AutomationsPage(props: { providerCatalog?: AutomationProviderCat
       <div className="mx-auto max-w-xl p-6 pt-16">
         <Alert variant="warning">
           <AlertCircle aria-hidden="true" />
-          <AlertTitle>Select a Den organization</AlertTitle>
-          <AlertDescription>Automations belong to your active Den organization.</AlertDescription>
+          <AlertTitle>选择一个 Den 组织</AlertTitle>
+          <AlertDescription>自动化工具属于活动的 Den 组织。</AlertDescription>
         </Alert>
       </div>
     )
@@ -265,12 +271,12 @@ export function AutomationsPage(props: { providerCatalog?: AutomationProviderCat
   if (listQuery.error) {
     return (
       <div className="mx-auto flex max-w-xl flex-col items-center gap-4 p-6 pt-16 text-center" role="alert">
-        <AlertCircle className="size-8 text-destructive" aria-hidden="true" />
-        <div>
-          <h2 className="font-medium">Automations unavailable</h2>
-          <p className="mt-2 text-sm text-muted-foreground">{describeError(listQuery.error)}</p>
-        </div>
-        <Button variant="outline" onClick={() => void listQuery.refetch()}><RefreshCw />Retry</Button>
+          <AlertCircle className="size-8 text-destructive" aria-hidden="true" />
+          <div>
+            <h2 className="font-medium">自动化工具不可用</h2>
+            <p className="mt-2 text-sm text-muted-foreground">{describeError(listQuery.error)}</p>
+          </div>
+          <Button variant="outline" onClick={() => void listQuery.refetch()}><RefreshCw />重试</Button>
       </div>
     )
   }
@@ -279,19 +285,19 @@ export function AutomationsPage(props: { providerCatalog?: AutomationProviderCat
     return (
       <div className="mx-auto max-w-3xl space-y-5 p-6">
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon" aria-label="Back to Automations" onClick={() => openAutomation(null)}>
+          <Button variant="ghost" size="icon" aria-label="回到自动化工具列表" onClick={() => openAutomation(null)}>
             <ArrowLeft />
           </Button>
           <div>
-            <h2 className="text-xl font-semibold">Create Automation</h2>
-            <p className="text-sm text-muted-foreground">It becomes active as soon as you create it.</p>
+            <h2 className="text-xl font-semibold">创建自动化工具</h2>
+            <p className="text-sm text-muted-foreground">一旦创建将立即生效。</p>
           </div>
         </div>
         <AutomationEditor
           busy={busyAction === "create"}
           modelOptions={models}
           providerCatalog={props.providerCatalog}
-          submitLabel="Create and activate"
+          submitLabel="创建并启用"
           onCancel={() => openAutomation(null)}
           onSave={async (input) => {
             setBusyAction("create")
@@ -299,7 +305,7 @@ export function AutomationsPage(props: { providerCatalog?: AutomationProviderCat
               const detail = await client.createAutomation(organizationId, input)
               await refresh()
               openAutomation(detail.automation.id)
-              toast.success("Automation created and active")
+              toast.success("已创建并启用自动化")
             } catch (error) {
               toast.error(describeError(error))
             } finally {
@@ -318,7 +324,7 @@ export function AutomationsPage(props: { providerCatalog?: AutomationProviderCat
         <div className="mx-auto max-w-xl space-y-4 p-6 pt-16 text-center">
           <AlertCircle className="mx-auto size-8 text-destructive" />
           <p>{describeError(detailQuery.error)}</p>
-          <Button variant="outline" onClick={() => openAutomation(null)}>Back to Automations</Button>
+          <Button variant="outline" onClick={() => openAutomation(null)}>返回自动化工具</Button>
         </div>
       )
     }
@@ -334,8 +340,8 @@ export function AutomationsPage(props: { providerCatalog?: AutomationProviderCat
       return (
         <div className="mx-auto max-w-3xl space-y-5 p-6">
           <div>
-            <h2 className="text-xl font-semibold">Edit Automation</h2>
-            <p className="text-sm text-muted-foreground">Saving creates an immutable revision for future runs.</p>
+            <h2 className="text-xl font-semibold">编辑自动化工具</h2>
+            <p className="text-sm text-muted-foreground">保存将创建未来运行的不可变修订版。</p>
           </div>
           <AutomationEditor
             initial={inputFromDetail(detail)}
@@ -344,7 +350,7 @@ export function AutomationsPage(props: { providerCatalog?: AutomationProviderCat
             openModelPickerOnMount={repairingModel}
             modelOptions={models}
             providerCatalog={props.providerCatalog}
-            submitLabel="Save changes"
+            submitLabel="保存更改"
             onCancel={() => {
               setEditing(false)
               setRepairingModel(false)
@@ -356,7 +362,7 @@ export function AutomationsPage(props: { providerCatalog?: AutomationProviderCat
                 await refresh()
                 setEditing(false)
                 setRepairingModel(false)
-                toast.success("Automation updated")
+                toast.success("已更新自动化")
               } catch (error) {
                 toast.error(describeError(error))
               } finally {
@@ -372,7 +378,7 @@ export function AutomationsPage(props: { providerCatalog?: AutomationProviderCat
       <div className="mx-auto max-w-5xl space-y-5 p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="flex min-w-0 items-start gap-3">
-            <Button variant="ghost" size="icon" aria-label="Back to Automations" onClick={() => openAutomation(null)}>
+            <Button variant="ghost" size="icon" aria-label="返回自动化工具" onClick={() => openAutomation(null)}>
               <ArrowLeft />
             </Button>
             <div className="min-w-0">
@@ -387,16 +393,16 @@ export function AutomationsPage(props: { providerCatalog?: AutomationProviderCat
             {(detail.revision.executionTarget ?? "desktop") === "desktop" ? <Button variant="outline" onClick={() => {
               setRepairingModel(false)
               setEditing(true)
-            }}><Pencil />Edit</Button> : null}
+            }}>编辑</Button> : null}
             {task.state === "active" ? (
               <Button
                 variant="outline"
                 disabled={busyAction !== null}
                 onClick={() => void act("deactivate", async () => {
                   await client.deactivateAutomation(organizationId, task.id)
-                }, "Automation deactivated. A run already in progress will continue.")}
+                }, "已停用自动化。正在进行中的运行将继续。")}
               >
-                <Square />Deactivate
+                <Square />停用
               </Button>
             ) : task.state === "inactive" ? (
               <Button
@@ -404,9 +410,9 @@ export function AutomationsPage(props: { providerCatalog?: AutomationProviderCat
                 disabled={busyAction !== null}
                 onClick={() => void act("activate", async () => {
                   await client.activateAutomation(organizationId, task.id)
-                }, "Automation activated")}
+                }, "已启用自动化")}
               >
-                <Play />Activate
+                <Play />启用
               </Button>
             ) : null}
             <Button
@@ -415,11 +421,11 @@ export function AutomationsPage(props: { providerCatalog?: AutomationProviderCat
                 const run = await client.runAutomationNow(organizationId, task.id)
                 const next = new URLSearchParams({ automation: task.id, run: run.id })
                 setSearchParams(next)
-              }, "Automation queued")}
+              }, "自动化工具已排队")}
             >
-              <Play />Run now
+              <Play />立即运行
             </Button>
-            <Button variant="ghost" size="icon" aria-label="Archive Automation" onClick={() => setArchiveOpen(true)}>
+            <Button variant="ghost" size="icon" aria-label="归档自动化" onClick={() => setArchiveOpen(true)}>
               <Archive />
             </Button>
           </div>
@@ -428,12 +434,12 @@ export function AutomationsPage(props: { providerCatalog?: AutomationProviderCat
         {task.needsAttentionReason ? (
           <Alert variant="warning" data-automation-model-attention={modelNeedsAttention || undefined}>
             {modelNeedsAttention ? <AlertTriangle /> : <AlertCircle />}
-            <AlertTitle>{modelNeedsAttention ? "Model needs attention" : "Action required"}</AlertTitle>
+            <AlertTitle>{modelNeedsAttention ? "模型需要关注" : "需要操作"}</AlertTitle>
             <AlertDescription className="space-y-3">
-              <p>{task.needsAttentionReason.message}</p>
+              <p>{task.needsAttentionReason?.message || ""}</p>
               {modelNeedsAttention && (detail.revision.executionTarget ?? "desktop") === "desktop" ? (
                 <>
-                  <p>This Automation is paused. Its instructions, schedule, and run history are unchanged.</p>
+                  <p>此自动化已暂停。其指令、日程和运行历史记录不变。</p>
                   <Button
                     type="button"
                     size="sm"
@@ -443,7 +449,7 @@ export function AutomationsPage(props: { providerCatalog?: AutomationProviderCat
                       setEditing(true)
                     }}
                   >
-                    Select a supported model
+                    选择一个支持的模型
                   </Button>
                 </>
               ) : null}
@@ -455,8 +461,8 @@ export function AutomationsPage(props: { providerCatalog?: AutomationProviderCat
           <div className="space-y-5">
             <Card variant="outline">
               <CardHeader>
-                <CardTitle>Instructions</CardTitle>
-                <CardDescription>Revision {detail.revision.version}</CardDescription>
+                <CardTitle>指令说明</CardTitle>
+                <CardDescription>修订版 {detail.revision.version}</CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="whitespace-pre-wrap text-sm leading-6">{detail.revision.instructions}</p>
@@ -465,25 +471,25 @@ export function AutomationsPage(props: { providerCatalog?: AutomationProviderCat
 
             <Card variant="outline">
               <CardHeader>
-                <CardTitle>{detail.revision.executionTarget === "cloud" ? "OpenWork Cloud execution" : "Desktop execution"}</CardTitle>
-                <CardDescription>{detail.revision.executionTarget === "cloud" ? "Den wakes the Cloud runtime and runs this task headlessly without a desktop." : "Den keeps the schedule and durable history; your connected desktop runs the task locally."}</CardDescription>
+                <CardTitle>{detail.revision.executionTarget === "cloud" ? "OpenWork 云执行" : "桌面执行"}</CardTitle>
+                <CardDescription>{detail.revision.executionTarget === "cloud" ? "Den 唤醒云运行时并以无头方式运行此任务，无需桌面。" : "Den 保留调度和持久化历史记录；已连接的桌面在本地运行任务。"}</CardDescription>
               </CardHeader>
               <CardContent className="grid gap-3 text-sm sm:grid-cols-2">
-                <div className="min-w-0"><span className="text-muted-foreground">Model</span><p className="break-words">{describeAutomationModel(detail.revision.model, models)}</p></div>
-                <div className="min-w-0"><span className="text-muted-foreground">Next run</span><p className="break-words">{task.state === "needs_attention" ? "No future run scheduled" : formatAutomationTime(task.nextDueAt)}</p></div>
-                <div className="min-w-0"><span className="text-muted-foreground">Runtime limit</span><p className="break-words">{Math.round(detail.revision.maximumRuntimeMs / 60_000)} minutes</p></div>
-                <div className="min-w-0"><span className="text-muted-foreground">Integrations</span><p className="break-words">Your available OpenWork Connect tools</p></div>
+                <div className="min-w-0"><span className="text-muted-foreground">模型</span><p className="break-words">{describeAutomationModel(detail.revision.model, models)}</p></div>
+                <div className="min-w-0"><span className="text-muted-foreground">下次运行</span><p className="break-words">{task.state === "needs_attention" ? "未安排未来的运行" : formatAutomationTime(task.nextDueAt)}</p></div>
+                <div className="min-w-0"><span className="text-muted-foreground">运行时限制</span><p className="break-words">{Math.round(detail.revision.maximumRuntimeMs / 60_000)} 分钟</p></div>
+                <div className="min-w-0"><span className="text-muted-foreground">集成</span><p className="break-words">可用的 OpenWork Connect 工具集</p></div>
               </CardContent>
             </Card>
 
             <Card variant="outline">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2"><History className="size-4" />Run history</CardTitle>
-                <CardDescription>Durable receipts for manual and scheduled runs.</CardDescription>
+                <CardTitle className="flex items-center gap-2"><History className="size-4" />运行历史</CardTitle>
+                <CardDescription>手动和定时运行的持久化收据。</CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
                 {runsQuery.isLoading ? <Skeleton className="h-24 rounded-xl" /> : null}
-                {!runsQuery.isLoading && runs.length === 0 ? <p className="text-sm text-muted-foreground">No runs yet.</p> : null}
+                {!runsQuery.isLoading && runs.length === 0 ? <p className="text-sm text-muted-foreground">暂无运行记录。</p> : null}
                 {runs.map((run) => (
                   <div
                     key={run.id}
@@ -511,8 +517,8 @@ export function AutomationsPage(props: { providerCatalog?: AutomationProviderCat
                           disabled={busyAction !== null}
                           onClick={() => void act(`cancel:${run.id}`, async () => {
                             await client.cancelAutomationRun(organizationId, run.id)
-                          }, "Run cancellation requested")}
-                        >Cancel</Button>
+                          }, "已取消运行")}
+                        >取消</Button>
                       ) : null}
                       <Button
                         type="button"
@@ -522,7 +528,7 @@ export function AutomationsPage(props: { providerCatalog?: AutomationProviderCat
                           if (run.executionThread) navigate(automationExecutionThreadRoute(run.executionThread))
                           else setSearchParams(new URLSearchParams({ automation: task.id, run: run.id }))
                         }}
-                      >Open</Button>
+                      >打开</Button>
                     </span>
                   </div>
                 ))}
@@ -531,19 +537,19 @@ export function AutomationsPage(props: { providerCatalog?: AutomationProviderCat
           </div>
 
           <Card variant="outline" className="h-fit">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2"><Monitor className="size-4" />Execution thread</CardTitle>
-              <CardDescription>{selectedRunId ? "Run receipt and event timeline" : "Select a run to inspect its execution thread."}</CardDescription>
-            </CardHeader>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2"><Monitor className="size-4" />执行线程</CardTitle>
+                <CardDescription>{selectedRunId ? "运行收据和时间线" : "选择一次运行以检查其执行线程。"}</CardDescription>
+              </CardHeader>
             <CardContent>
               {!selectedRunId ? (
-                <div className="py-10 text-center text-sm text-muted-foreground">No run selected.</div>
+                <div className="py-10 text-center text-sm text-muted-foreground">未选择运行。</div>
               ) : receiptQuery.isLoading ? (
                 <Skeleton className="h-48 rounded-xl" />
               ) : receiptQuery.error || !selectedReceipt ? (
                 <Alert variant="warning"><AlertCircle /><AlertDescription>{describeError(receiptQuery.error)}</AlertDescription></Alert>
               ) : !threadMatches ? (
-                <Alert variant="warning"><AlertCircle /><AlertDescription>This Cloud thread no longer matches the selected run.</AlertDescription></Alert>
+                <Alert variant="warning"><AlertCircle /><AlertDescription>此云线程不再匹配所选的运行。</AlertDescription></Alert>
               ) : (
                 <div className="space-y-4">
                   <div className="flex flex-wrap items-center gap-2">
@@ -551,16 +557,16 @@ export function AutomationsPage(props: { providerCatalog?: AutomationProviderCat
                     {selectedReceipt.run.executionThread ? (
                       <Badge variant="outline"><ExecutionIcon run={selectedReceipt.run} />{automationExecutionIdentity(selectedReceipt.run.executionThread).label}</Badge>
                     ) : selectedReceipt.run.status === "queued" ? (
-                      <Badge variant="outline">{selectedReceipt.run.executionTarget === "cloud" ? "Waiting for OpenWork Cloud" : "Waiting for desktop runner"}</Badge>
+                      <Badge variant="outline">{selectedReceipt.run.executionTarget === "cloud" ? "等待 OpenWork 云" : "等待桌面运行器"}</Badge>
                     ) : (
-                      <Badge variant="outline">{selectedReceipt.run.executionTarget === "cloud" ? <Cloud className="mr-1 h-3 w-3" /> : <Monitor className="mr-1 h-3 w-3" />}{selectedReceipt.run.executionTarget === "cloud" ? "OpenWork Cloud" : "Desktop"}</Badge>
+                      <Badge variant="outline">{selectedReceipt.run.executionTarget === "cloud" ? <Cloud className="mr-1 h-3 w-3" /> : <Monitor className="mr-1 h-3 w-3" />}{selectedReceipt.run.executionTarget === "cloud" ? "OpenWork 云" : "桌面"}</Badge>
                     )}
                   </div>
                   {selectedReceipt.run.error ? (
                     <Alert variant="destructive"><AlertCircle /><AlertTitle>{selectedReceipt.run.error.code}</AlertTitle><AlertDescription>{selectedReceipt.run.error.message}</AlertDescription></Alert>
                   ) : null}
                   {selectedReceipt.run.resultSummary ? (
-                    <div><p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Result</p><p className="mt-1 whitespace-pre-wrap text-sm">{selectedReceipt.run.resultSummary}</p></div>
+                    <div><p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">结果</p><p className="mt-1 whitespace-pre-wrap text-sm">{selectedReceipt.run.resultSummary}</p></div>
                   ) : null}
                   <div className="text-xs text-muted-foreground">{usageLabel(selectedReceipt.run)}</div>
                   <ol className="space-y-3 border-s border-border ps-4">
@@ -584,17 +590,17 @@ export function AutomationsPage(props: { providerCatalog?: AutomationProviderCat
         <ConfirmModal
           open={archiveOpen}
           variant="danger"
-          title="Archive Automation?"
-          message="Future runs will stop. Durable run history will remain available in Den."
-          confirmLabel="Archive"
-          cancelLabel="Cancel"
+          title="归档自动化？"
+          message="未来的运行将停止。持久化的运行历史记录将在 Den 中保持可用。"
+          confirmLabel="归档"
+          cancelLabel="取消"
           onCancel={() => setArchiveOpen(false)}
           onConfirm={() => {
             setArchiveOpen(false)
             void act("archive", async () => {
               await client.archiveAutomation(organizationId, task.id)
               openAutomation(null)
-            }, "Automation archived")
+            }, "已归档自动化")
           }}
         />
       </div>
@@ -603,25 +609,30 @@ export function AutomationsPage(props: { providerCatalog?: AutomationProviderCat
 
   return (
     <div className="mx-auto max-w-5xl space-y-5 p-6">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-semibold">Automations</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Scheduled durably in Den, with each Automation executed in its fixed Desktop or OpenWork Cloud location.</p>
-        </div>
-        <Button onClick={() => setSearchParams(new URLSearchParams({ create: "1" }))}><Plus />New Automation</Button>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h2 className="text-xl font-semibold">自动化工具</h2>
+            <p className="mt-1 text-sm text-muted-foreground">由 Den 持久化调度，每个自动化在其固定的桌面或 OpenWork 云位置执行。</p>
+          </div>
+          <Button onClick={() => setSearchParams(new URLSearchParams({ create: "1" }))}><Plus />新建自动化</Button>
       </div>
       <div className="relative max-w-md">
         <Search className="pointer-events-none absolute left-3 top-2.5 size-4 text-muted-foreground" />
-        <Input className="pl-9" value={query} placeholder="Search Automations" onChange={(event) => setQuery(event.currentTarget.value)} />
+        <Input
+          className="pl-9"
+          value={query}
+          placeholder="搜索自动化工具"
+          onChange={(event) => setQuery(event.currentTarget.value)}
+        />
       </div>
       {filteredItems.length === 0 ? (
         <Empty>
           <EmptyHeader>
             <EmptyMedia variant="icon"><CalendarClock /></EmptyMedia>
-            <EmptyTitle>{query ? "No matching Automations" : "No Automations yet"}</EmptyTitle>
-            <EmptyDescription>{query ? "Try a different search." : "Create a Desktop Automation here; it runs while this signed-in desktop is connected. Create headless Cloud Automations from Web or Cloud Chat."}</EmptyDescription>
+            <EmptyTitle>{query ? "无匹配的自动化" : "暂无自动化工具"}</EmptyTitle>
+            <EmptyDescription>{query ? "换个关键词试试。" : "在这里创建桌面自动化；当已登录的桌面连接时会运行。从 Web 或云聊天中创建无头云自动化。"}</EmptyDescription>
           </EmptyHeader>
-          {!query ? <EmptyContent><Button onClick={() => setSearchParams(new URLSearchParams({ create: "1" }))}><Plus />New Automation</Button></EmptyContent> : null}
+          {!query ? <EmptyContent><Button onClick={() => setSearchParams(new URLSearchParams({ create: "1" }))}><Plus />新建自动化</Button></EmptyContent> : null}
         </Empty>
       ) : (
         <div className="grid gap-3 md:grid-cols-2">
@@ -637,7 +648,7 @@ export function AutomationsPage(props: { providerCatalog?: AutomationProviderCat
                 <div className="min-w-0">
                   <h3 className="flex items-center gap-2 truncate font-medium">
                     {item.automation.state === "needs_attention" ? (
-                      <AlertTriangle className="size-4 shrink-0 text-warning" aria-label="Automation needs attention" />
+                      <AlertTriangle className="size-4 shrink-0 text-warning" aria-label="自动化需要关注" />
                     ) : null}
                     <span className="truncate">{item.automation.name}</span>
                   </h3>
@@ -647,7 +658,7 @@ export function AutomationsPage(props: { providerCatalog?: AutomationProviderCat
               </div>
               <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
                 <span>{formatAutomationSchedule(item.revision.schedule)}</span>
-                <span>{item.latestRun ? `Last run: ${item.latestRun.status}` : `Next: ${formatAutomationTime(item.automation.nextDueAt)}`}</span>
+                <span>{item.latestRun ? `上次运行: ${item.latestRun.status}` : `下次: ${formatAutomationTime(item.automation.nextDueAt)}`}</span>
               </div>
             </button>
           ))}

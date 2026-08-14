@@ -13,13 +13,13 @@ import type { AutomationModelOption, AutomationProviderCatalog } from "./automat
 import { automationPickerOptions, describeAutomationModel } from "./automation-model-options"
 
 const WEEKDAYS = [
-  { value: 1, label: "Mon" },
-  { value: 2, label: "Tue" },
-  { value: 3, label: "Wed" },
-  { value: 4, label: "Thu" },
-  { value: 5, label: "Fri" },
-  { value: 6, label: "Sat" },
-  { value: 0, label: "Sun" },
+  { value: 1, label: "周一" },
+  { value: 2, label: "周二" },
+  { value: 3, label: "周三" },
+  { value: 4, label: "周四" },
+  { value: 5, label: "周五" },
+  { value: 6, label: "周六" },
+  { value: 0, label: "周日" },
 ] as const
 
 function localTimezone() {
@@ -154,13 +154,13 @@ export function AutomationEditor(props: AutomationEditorProps) {
       }}
     >
       <div className="space-y-2">
-        <Label htmlFor="automation-name">Name</Label>
+        <Label htmlFor="automation-name">编辑名称</Label>
         <Input
           id="automation-name"
           value={input.name}
           maxLength={120}
           required
-          placeholder="Daily project summary"
+          placeholder="每日项目汇总"
           onChange={(event) => {
             const name = event.currentTarget.value
             setInput((current) => ({ ...current, name }))
@@ -169,24 +169,24 @@ export function AutomationEditor(props: AutomationEditorProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="automation-instructions">Instructions</Label>
+        <Label htmlFor="automation-instructions">指令说明</Label>
         <Textarea
           id="automation-instructions"
           className="min-h-36 resize-y"
           value={input.instructions}
           required
-          placeholder="Describe the outcome, sources to check, and what a useful result should include."
+          placeholder="描述期望的结果、要检查的来源，以及有用的结果应该包含什么。"
           onChange={(event) => {
             const instructions = event.currentTarget.value
             setInput((current) => ({ ...current, instructions }))
           }}
         />
-        <p className="text-xs text-muted-foreground">Each claimed run starts a fresh task in your desktop OpenCode runtime.</p>
+        <p className="text-xs text-muted-foreground">每次声明的运行都会在桌面的 OpenCode 运行时中启动一个新任务。</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="automation-frequency">Schedule</Label>
+          <Label htmlFor="automation-frequency">频率</Label>
           <select
             id="automation-frequency"
             className="h-9 w-full rounded-lg border border-border bg-background px-3 text-sm"
@@ -196,14 +196,14 @@ export function AutomationEditor(props: AutomationEditorProps) {
               if (kind === "once" || kind === "daily" || kind === "weekly") changeScheduleKind(kind)
             }}
           >
-            <option value="once">Once</option>
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
+            <option value="once">一次性</option>
+            <option value="daily">每天</option>
+            <option value="weekly">每周</option>
           </select>
         </div>
         {input.schedule.kind === "once" ? (
           <div className="space-y-2">
-            <Label htmlFor="automation-once-at">Run at</Label>
+            <Label htmlFor="automation-once-at">运行时间</Label>
             <Input
               id="automation-once-at"
               type="datetime-local"
@@ -219,7 +219,7 @@ export function AutomationEditor(props: AutomationEditorProps) {
           </div>
         ) : (
           <div className="space-y-2">
-            <Label htmlFor="automation-time">Time</Label>
+            <Label htmlFor="automation-time">时间</Label>
             <Input
               id="automation-time"
               type="time"
@@ -232,7 +232,7 @@ export function AutomationEditor(props: AutomationEditorProps) {
 
       {input.schedule.kind === "weekly" ? (
         <div className="space-y-2">
-          <Label>Days</Label>
+          <Label>日期</Label>
           <div className="flex flex-wrap gap-2">
             {WEEKDAYS.map((day) => (
               <Button
@@ -251,7 +251,7 @@ export function AutomationEditor(props: AutomationEditorProps) {
 
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="automation-timezone">Timezone</Label>
+          <Label htmlFor="automation-timezone">时区</Label>
           <Input
             id="automation-timezone"
             value={input.schedule.timezone}
@@ -262,7 +262,7 @@ export function AutomationEditor(props: AutomationEditorProps) {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="automation-model">Model</Label>
+          <Label htmlFor="automation-model">模型</Label>
           <Button
             id="automation-model"
             type="button"
@@ -271,7 +271,7 @@ export function AutomationEditor(props: AutomationEditorProps) {
             onClick={() => setPickerOpen(true)}
           >
             <span className="min-w-0 truncate">
-              {currentModelAvailable ? modelLabel : "Current model is no longer available"}
+              {currentModelAvailable ? modelLabel : "当前模型不再可用"}
             </span>
             <ChevronDown className="size-4 shrink-0 opacity-60" />
           </Button>
@@ -280,7 +280,7 @@ export function AutomationEditor(props: AutomationEditorProps) {
             options={pickerOptions}
             query={modelQuery}
             setQuery={setModelQuery}
-            subtitle="Runs use this model and reasoning level in your desktop runtime."
+            subtitle="运行时将使用此模型和推理级别。"
             target="default"
             current={{ providerID: input.model.providerId, modelID: input.model.modelId }}
             onSelect={(model) => {
@@ -303,12 +303,12 @@ export function AutomationEditor(props: AutomationEditorProps) {
       </div>
 
       <div className="rounded-xl border border-border bg-muted/30 p-3 text-sm text-muted-foreground">
-        Den keeps the schedule and run history. Your signed-in desktop claims each occurrence and executes it with the selected model in its local OpenCode runtime. If the desktop is unavailable before the claim deadline, the occurrence is recorded as missed.
+        Den 保留日程和运行历史记录。已登录的桌面在截止日期前认领每次发生事件，并使用所选模型在其本地 OpenCode 运行时中执行它。如果在截止时间前桌面不可用，该发生事件将被记录为错过。
       </div>
 
       <div className="flex justify-end gap-2">
-        <Button type="button" variant="outline" disabled={props.busy} onClick={props.onCancel}>Cancel</Button>
-        <Button type="submit" disabled={!canSave || props.busy}>{props.busy ? "Saving…" : props.submitLabel}</Button>
+        <Button type="button" variant="outline" disabled={props.busy} onClick={props.onCancel}>取消</Button>
+        <Button type="submit" disabled={!canSave || props.busy}>{props.busy ? "保存中…" : props.submitLabel}</Button>
       </div>
     </form>
   )
