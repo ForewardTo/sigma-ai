@@ -1697,6 +1697,7 @@ export default {
   "share_skill_destination.subtitle": "Choose an existing workspace or create a new one before importing this shared skill.",
   "share_skill_destination.title": "Where should this skill go?",
   "share_skill_destination.trigger_label": "Trigger",
+  "sidebar.automations": "Automations",
   "sidebar.collapse": "Collapse",
   "sidebar.expand": "Expand",
   "skills.catalog_search_placeholder": "Search installed skills",

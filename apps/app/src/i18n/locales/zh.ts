@@ -1027,6 +1027,7 @@ export default {
   "share_skill_destination.subtitle": "选择现有工作区或新建一个，然后导入此共享skill。",
   "share_skill_destination.title": "这个skill放在哪里？",
   "share_skill_destination.trigger_label": "触发器",
+  "sidebar.automations": "自动化",
   "sidebar.collapse": "收起",
   "sidebar.expand": "展开",
   "skills.catalog_search_placeholder": "搜索已安装的技能",

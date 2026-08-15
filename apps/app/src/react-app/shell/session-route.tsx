@@ -2637,7 +2637,7 @@ export function SessionRoute() {
           }}
         />
       }
-      primaryTitle={automationsRouteActive ? "Automations" : undefined}
+      primaryTitle={automationsRouteActive ? t("sidebar.automations") : undefined}
       primarySlot={automationsRouteActive ? (
         <AutomationsPage providerCatalog={providerCatalog} />
       ) : undefined}
