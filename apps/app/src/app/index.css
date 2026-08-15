@@ -118,6 +118,39 @@
   }
 }
 
+/* Empty-state hero: one orchestrated staggered rise on first paint. */
+@keyframes ow-hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility animate-ow-hero-rise {
+  animation: ow-hero-rise 480ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-ow-hero-rise {
+    animation-duration: 1ms;
+  }
+}
+
+/* Trend A+B Hybrid: fluid mesh gradient (see session-empty-hero.tsx) */
+@keyframes flow-mesh {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -20px) scale(1.05); }
+  66% { transform: translate(-20px, 25px) scale(0.98); }
+}
+
+@utility.animate-flow-mesh {
+  animation: flow-mesh 12s ease-in-out infinite;
+}
+
 :root {
   color-scheme: light;
   --dls-surface: var(--slate-1);
@@ -555,6 +588,26 @@ select:disabled {
     background-color: rgb(var(--dls-accent-rgb) / 0.6);
   }
 }
+
+/* Trend A+B: Organic grid halo - multiple soft orbs that breathe independently */
+@keyframes org-halo-1 {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.15); }
+}
+
+@keyframes org-halo-2 {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 0.55; transform: scale(1.25); }
+}
+
+@keyframes org-halo-3 {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
+}
+
+@utility.org-halo-1 { animation: org-halo-1 8s ease-in-out infinite; }
+@utility.org-halo-2 { animation: org-halo-2 10s ease-in-out infinite 1s; }
+@utility.org-halo-3 { animation: org-halo-3 9s ease-in-out infinite 0.5s; }
 
 /* Sweep under the active boot checkpoint. Stays in CSS so the gateway can poll
    without an endless JS animation competing for the main thread. */

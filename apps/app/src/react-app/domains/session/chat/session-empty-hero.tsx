@@ -1,6 +1,6 @@
 /** @jsxImportSource react */
 import { useEffect, useState } from "react";
-import { ArrowRight, X, Zap } from "lucide-react";
+import { ArrowRight, X, Zap, FileText, FileSpreadsheet, Globe } from "lucide-react";
 
 import { DEFAULT_MODEL } from "@/app/constants";
 import type { ComposerAttachment } from "@/app/types";
@@ -55,6 +55,8 @@ const DEFAULT_SUGGESTIONS: HeroSuggestion[] = [
       "在浏览器中打开 craigslist.org 并搜索出售的沙发。展示前 5 个带价格的结果。",
   },
 ];
+
+const SUGGESTION_ICONS = [FileText, FileSpreadsheet, Globe, Zap] as const;
 
 export type SessionEmptyHeroProps = {
   providerCount: number;
@@ -144,26 +146,79 @@ export function SessionEmptyHero(props: SessionEmptyHeroProps) {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[640px] space-y-6 px-4 max-lg:px-4 sm:px-6">
-      <div className="space-y-1.5 text-center">
-        <h2 className="text-[24px] font-semibold leading-[30px] tracking-[-0.02em] text-foreground">
-          你需要做什么？
-        </h2>
-        <p className="text-[13px] text-muted-foreground">告诉我你想做的事</p>
+    <>
+      {/* Trend A+B Hybrid: Organic Mesh Gradient Background - Full viewport */}
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 overflow-hidden"
+        style={{ zIndex: -1 }}
+      >
+        {/* Fluid gradient mesh - 3 independent orbs breathing at different
+            speeds. Anchored to the viewport center (calc(50% - Npx)) so they
+            stay glued to the centered content at any window width. */}
+        <div
+          className="absolute left-[calc(50%_-_340px)] top-32 h-[400px] w-[400px] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[100px] opacity-35 animate-flow-mesh"
+          style={{
+            background: "radial-gradient(circle at center, rgba(59, 130, 246, 0.3), transparent)",
+            animationName: "flow-mesh",
+          }}
+        />
+        <div
+          className="absolute right-[calc(50%_-_420px)] bottom-60 h-[360px] w-[360px] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[90px] opacity-30 animate-flow-mesh"
+          style={{
+            background: "radial-gradient(circle at center, rgba(14, 165, 233, 0.25), transparent)",
+            animationName: "flow-mesh",
+            animationDelay: "2s",
+          }}
+        />
+        <div
+          className="absolute left-[calc(50%_-_160px)] bottom-28 h-[320px] w-[320px] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[80px] opacity-25 animate-flow-mesh"
+          style={{
+            background: "radial-gradient(circle at center, rgba(16, 185, 129, 0.2), transparent)",
+            animationName: "flow-mesh",
+            animationDelay: "4s",
+          }}
+        />
+        {/* Grain overlay: dithers the soft gradients so 8-bit displays don't
+            show color banding (same trick Linear/Stripe use on mesh backgrounds) */}
+        <div
+          className="absolute inset-0 opacity-[0.05]"
+          style={{
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+          }}
+        />
       </div>
 
-      <NewTaskComposer
-        draft={prompt}
-        onDraftChange={setPrompt}
-        onRunTask={submit}
-        busy={props.busy ?? false}
-        context={props.composer ?? null}
-      />
+      <div className="relative mx-auto w-full max-w-[760px] px-4 pt-8 max-lg:px-4 sm:px-6">
+      {/* Header - Minimalist Productivity Style */}
+      <div className="animate-ow-hero-rise text-center">
+        {/* Section header */}
+        <h2 className="mt-2 text-[32px] font-semibold tracking-tight text-dls-text-primary md:text-[36px]">
+          <span className="block">我能为你做些什么？</span>
+        </h2>
+        <p className="mt-2.5 text-[15px] text-muted-foreground">
+          一句话描述任务，AI 替你完成写作、分析与自动化
+        </p>
+      </div>
 
+      {/* Task composer - Minimal flat design */}
+      <div className="mt-8 animate-ow-hero-rise" style={{ animationDelay: "120ms" }}>
+        <NewTaskComposer
+          draft={prompt}
+          onDraftChange={setPrompt}
+          onRunTask={submit}
+          busy={props.busy ?? false}
+          context={props.composer ?? null}
+        />
+      </div>
+
+      {/* OpenWork Models hint - styled like the provider card but inline */}
       {showModelsHint ? (
         <div
-          className="flex items-center justify-center gap-2 text-[12px] text-muted-foreground"
+          className="animate-ow-hero-rise mt-6 flex items-center justify-center gap-2 text-sm text-dls-secondary"
           data-testid="openwork-models-hint"
+          style={{ animationDelay: "200ms" }}
         >
           <span>正在使用免费入门模型。</span>
           <button
@@ -189,44 +244,73 @@ export function SessionEmptyHero(props: SessionEmptyHeroProps) {
         </div>
       ) : null}
 
+      {/* Provider connection card - Streamlined layout */}
       {!showModelsHint &&
       canAddProviders &&
       props.providerCount === 0 &&
       props.onOpenProviderAuth ? (
         <button
           type="button"
-          className="flex w-full items-start gap-3 rounded-xl border border-blue-7/50 bg-blue-2/40 p-3.5 text-left transition-colors hover:bg-blue-3/50"
+          className="animate-ow-hero-rise mt-6 flex w-full items-center gap-4 rounded-xl border border-dls-border bg-dls-surface p-3.5 text-left shadow-[var(--dls-card-shadow)] transition-all duration-200 hover:border-blue-7/50 hover:shadow-[0_8px_24px_rgba(15,23,42,0.06)]"
           onClick={props.onOpenProviderAuth}
+          style={{ animationDelay: "200ms" }}
+          aria-label="连接模型提供商"
         >
-          <Zap className="mt-0.5 size-4 shrink-0 text-blue-10" />
-          <div>
-            <div className="text-[13px] font-medium text-foreground">
-              连接模型提供商
-            </div>
-            <div className="mt-0.5 text-[12px] text-muted-foreground">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary/90 text-primary-foreground">
+            <Zap className="size-4.5" />
+          </span>
+          <div className="min-w-0 flex-1 text-left">
+            <div className="text-[13px] font-semibold text-dls-text-primary">连接模型提供商</div>
+            <div className="mt-0.5 text-xs leading-relaxed text-dls-secondary">
               添加 Anthropic、OpenAI、Google 或其他提供商的 API 密钥以运行任务
             </div>
           </div>
+          <ArrowRight className="size-4 shrink-0 text-dls-secondary opacity-50 transition-all duration-200 group-hover:translate-x-0.5 group-hover:opacity-100" />
         </button>
       ) : null}
 
-      <div className="grid gap-2 sm:grid-cols-2">
-        {suggestions.map((suggestion) => (
-          <button
-            key={suggestion.title}
-            type="button"
-            className="rounded-xl border border-border bg-background p-3.5 text-left transition-colors hover:bg-accent"
-            onClick={() => fillPrompt(suggestion.prompt)}
-          >
-            <div className="truncate text-[13px] font-medium text-foreground">
-              {suggestion.title}
-            </div>
-            <div className="mt-0.5 line-clamp-2 text-[12px] leading-[17px] text-muted-foreground">
-              {suggestion.description}
-            </div>
-          </button>
-        ))}
+      {/* Suggestion cards section - Minimal grid layout */}
+      <div className="mt-10">
+        {/* Section divider line */}
+        <div className="flex items-center gap-4">
+          <span className="h-px flex-1 bg-gradient-to-r from-transparent via-dls-border to-transparent" />
+          <span className="text-[10px] font-medium uppercase tracking-widest text-dls-secondary">
+            推荐示例
+          </span>
+          <span className="h-px flex-1 bg-gradient-to-r from-transparent via-dls-border to-transparent" />
+        </div>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          {suggestions.map((suggestion, index) => {
+            const Icon = SUGGESTION_ICONS[index % SUGGESTION_ICONS.length];
+            return (
+              <button
+                key={suggestion.title}
+                type="button"
+                className="animate-ow-hero-rise group relative flex items-start gap-3 rounded-xl border border-dls-border bg-dls-surface p-3.5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-7/40 hover:bg-zinc-100 hover:shadow-[var(--dls-card-shadow)] dark:hover:bg-zinc-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-9"
+                style={{ animationDelay: `${260 + index * 60}ms` }}
+                onClick={() => fillPrompt(suggestion.prompt)}
+              >
+                {/* Icon block - muted state with primary hover */}
+                <span className="relative flex size-8 shrink-0 items-center justify-center rounded-md bg-dls-secondary/50 text-dls-secondary transition-all duration-200 group-hover:bg-primary group-hover:text-primary-foreground">
+                  <Icon className="size-3.5" />
+                </span>
+
+                {/* Content - two-line truncation */}
+                <div className="relative min-w-0 flex-1 pr-6">
+                  <div className="truncate text-sm font-medium text-dls-text-primary">
+                    {suggestion.title}
+                  </div>
+                  <div className="line-clamp-2 text-xs leading-relaxed text-dls-secondary">
+                    {suggestion.description}
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
